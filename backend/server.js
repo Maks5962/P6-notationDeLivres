@@ -16,7 +16,7 @@ const normalizePort = val => {
 };
 
 // Définir le port sur lequel le serveur va écouter
-const port = normalizePort(process.env.PORT || '3000'); // Priorise une variable d'environnement ou utilise '3000' par défaut
+const port = normalizePort(process.env.PORT || '4000'); // Priorise une variable d'environnement ou utilise '3000' par défaut
 app.set('port', port); // Configure le port dans l'application (utile si c'est Express)
 
 // Gestion des erreurs serveur avec une fonction dédiée
