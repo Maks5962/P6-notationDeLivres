@@ -9,6 +9,9 @@ router.post('/', auth, upload, optimizeImage, bookCtrl.addBook);
 
 // Route GET pour affichage
 router.get('/', bookCtrl.getBooks);
+router.get('/bestrating', bookCtrl.bestrating);
+router.get('/:id', bookCtrl.getBookId);
+
 
 
 module.exports = router;

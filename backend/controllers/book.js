@@ -43,3 +43,31 @@ exports.getBooks = async (req, res, next) => {
         res.status(500).json({ message: "Erreur lors de la récupération des livres" });
     }
 };
+
+
+// Contrôleur pour récupérer un livre précis
+exports.getBookId = async (req, res, next) => {
+
+    Book.findOne({ _id: req.params.id })
+        .then(book => res.status(200).json(book))
+        .catch(error => res.status(404).json({ error }));
+
+};
+
+
+// Contrôleur pour récupérer un livre précis
+exports.bestrating = async (req, res, next) => {
+    try {
+        const topBooks = await Book.find()
+            .sort({ averageRating: -1 }) // Trier par moyenne décroissante
+            .limit(3); // Limiter à 3 livres
+
+        if (topBooks.length === 0) {
+            return res.status(404).json({ message: "Aucun livre trouvé" });
+        }
+
+        res.status(200).json(topBooks); // Réponse envoyée
+    } catch (error) {
+        res.status(500).json({ error });
+    }
+};
