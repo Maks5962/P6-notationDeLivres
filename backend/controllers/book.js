@@ -134,3 +134,48 @@ exports.deleteBook = (req, res, next) => {
     req.auth;
 
 }
+
+
+exports.ratingBook = async (req, res, next) => {
+    try {
+        const userId = req.auth.userId; 
+        const bookId = req.params.id; 
+        const rating = req.body.rating;
+
+
+        // Vérifiez que les données nécessaires sont présentes
+        if (!rating || typeof rating !== 'number' || rating < 1 || rating > 5) {
+            return res.status(400).json({ message: 'Note invalide. La note doit être un nombre entre 1 et 5.' });
+        }
+
+        // Rechercher le livre à mettre à jour
+        const book = await Book.findOne({ _id: bookId });
+
+        if (!book) {
+            return res.status(404).json({ message: 'Livre non trouvé' });
+        }
+
+        // Vérifier si l'utilisateur a déjà noté ce livre
+        const existingRating = book.ratings.find(r => r.userId === userId);
+
+        if (existingRating) {
+            return res.status(409).json({ message: 'Vous avez déjà voté' });
+        }
+
+        // Ajouter la nouvelle note
+        book.ratings.push({ userId, grade: rating });
+
+        // Recalculer la moyenne des notes
+        const totalGrades = book.ratings.reduce((sum, r) => sum + r.grade, 0);
+        const averageRating = totalGrades / book.ratings.length;
+        book.averageRating = averageRating;
+
+        // Enregistrer les modifications
+        await book.save();
+        res.status(200).json({...book.toObject(), message: 'Note ajoutée avec succès'});
+    } catch (error) {
+        console.error('Erreur lors de la mise à jour de la note :', error);
+        res.status(500).json({ error });
+    }
+};
+
