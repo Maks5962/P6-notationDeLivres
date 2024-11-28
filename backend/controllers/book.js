@@ -168,11 +168,13 @@ exports.ratingBook = async (req, res, next) => {
         // Recalculer la moyenne des notes
         const totalGrades = book.ratings.reduce((sum, r) => sum + r.grade, 0);
         const averageRating = totalGrades / book.ratings.length;
-        book.averageRating = averageRating;
+
+        // Arrondir à 2 chiffres après la virgule
+        book.averageRating = Math.round(averageRating * 100) / 100; 
 
         // Enregistrer les modifications
         await book.save();
-        res.status(200).json({...book.toObject(), message: 'Note ajoutée avec succès'});
+        res.status(200).json(book);
     } catch (error) {
         console.error('Erreur lors de la mise à jour de la note :', error);
         res.status(500).json({ error });

@@ -4,13 +4,16 @@ const userRoutes = require('./routes/user');
 const bookRoutes = require('./routes/book');
 const path = require('path');
 
+require('dotenv').config();
+const URL_MONGO_DB = process.env.URL_MONGO_DB
+
 const app = express();
 
 // Middleware pour traiter les requêtes avec un corps JSON ou encodé
 app.use(express.json()); // Pour les requêtes au format JSON
 app.use(express.urlencoded({ extended: true })); // Pour les données encodées dans l'URL
 
-mongoose.connect('mongodb+srv://UserFORMATION:MDPdataBaseFORMATION@clusteropenclassrooms.ksidc.mongodb.net/OpenClassroomsBDD?retryWrites=true&w=majority', {
+mongoose.connect(URL_MONGO_DB, {
     useNewUrlParser: true,
     useUnifiedTopology: true
 })
